@@ -1,0 +1,3203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мастер авто - Панель управления</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Montserrat', sans-serif;
+        }
+
+        :root {
+            --primary: #2A5CAA;
+            --secondary: #FF6B35;
+            --accent: #00C2FF;
+            --dark: #1A1A2E;
+            --light: #F8F9FA;
+            --gray: #6C757D;
+            --success: #28A745;
+            --warning: #FFC107;
+            --danger: #DC3545;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+            color: var(--light);
+        }
+
+        /* Auth Container */
+        .auth-container {
+            display: block;
+            max-width: 480px;
+            width: 90%;
+        }
+
+        .auth-box {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 50px 40px;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            text-align: center;
+            animation: slideUp 0.6s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .auth-logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 28px;
+            box-shadow: 0 10px 20px rgba(42, 92, 170, 0.3);
+        }
+
+        .auth-logo h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--gray);
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(42, 92, 170, 0.4);
+        }
+
+        /* Forms */
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .form-group input::placeholder,
+        .form-group select::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(42, 92, 170, 0.4);
+        }
+
+        .auth-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .auth-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .auth-btn:hover::after {
+            left: 100%;
+        }
+
+        .auth-error {
+            color: var(--danger);
+            font-size: 14px;
+            margin-top: 12px;
+            min-height: 20px;
+            display: none;
+            background: rgba(220, 53, 69, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--danger);
+        }
+
+        .auth-success {
+            color: var(--success);
+            font-size: 14px;
+            margin-top: 12px;
+            min-height: 20px;
+            display: none;
+            background: rgba(40, 167, 69, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+        }
+
+        .auth-footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .switch-auth {
+            margin-top: 25px;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .switch-auth a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .switch-auth a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: none;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 2.5rem;
+            border-radius: 25px;
+            margin-bottom: 35px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.8s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            box-shadow: 0 10px 20px rgba(42, 92, 170, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 22px;
+            box-shadow: 0 8px 16px rgba(42, 92, 170, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, var(--danger) 0%, #ff416c 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            padding: 18px 35px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(42, 92, 170, 0.4);
+            border: none;
+        }
+
+        /* Main Content */
+        .content {
+            display: none;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.5s ease;
+            min-height: 600px;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(42, 92, 170, 0.3) 0%, rgba(0, 194, 255, 0.2) 100%);
+            padding: 30px;
+            border-radius: 20px;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+            font-weight: 600;
+        }
+
+        .stat-card .value {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, white, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Car Cards */
+        .car-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .car-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .car-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .car-image {
+            height: 200px;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .car-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .car-card:hover .car-image img {
+            transform: scale(1.1);
+        }
+
+        .car-info {
+            padding: 25px;
+        }
+
+        .car-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .car-price {
+            color: var(--accent);
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .car-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .detail-item i {
+            color: var(--accent);
+            width: 20px;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        }
+
+        th {
+            padding: 22px 20px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: white;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(42, 92, 170, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #ff416c 100%);
+            color: white;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #6f42c1 0%, #d63384 100%);
+            color: white;
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, var(--danger) 0%, #ff416c 100%);
+            color: white;
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Status Badges */
+        .status {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
+        .status-available {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28A745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .status-sold {
+            background: rgba(220, 53, 69, 0.2);
+            color: #DC3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .status-reserved {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .status-pending {
+            background: rgba(0, 194, 255, 0.2);
+            color: #00C2FF;
+            border: 1px solid rgba(0, 194, 255, 0.3);
+        }
+
+        .status-new {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6C757D;
+            border: 1px solid rgba(108, 117, 125, 0.3);
+        }
+
+        .status-active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28A745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(26, 26, 46, 0.98);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* File Upload */
+        .file-upload {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload label {
+            display: block;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .file-upload label:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .file-upload label i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+            color: var(--accent);
+        }
+
+        /* Image Preview */
+        .image-preview {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Search and Filter */
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            padding: 12px;
+            color: white;
+        }
+
+        .search-box button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(42, 92, 170, 0.3);
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card h3 {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Charts */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                padding: 20px;
+            }
+            
+            .car-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .nav-tabs {
+                justify-content: center;
+            }
+            
+            .nav-tab {
+                min-width: 160px;
+                padding: 16px 25px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .auth-box {
+                padding: 40px 25px;
+            }
+            
+            .dashboard-container {
+                padding: 15px;
+            }
+            
+            .content {
+                padding: 25px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .car-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tab {
+                min-width: 140px;
+                padding: 14px 20px;
+                font-size: 14px;
+            }
+            
+            .modal-content {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .auth-logo h1 {
+                font-size: 24px;
+            }
+            
+            .logo h1 {
+                font-size: 24px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .car-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Quick Actions Grid */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .quick-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(0, 194, 255, 0.2);
+        }
+
+        .quick-action-btn i {
+            font-size: 32px;
+            color: var(--accent);
+        }
+
+        .quick-action-btn span {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-state h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Screen -->
+    <div class="auth-container" id="authScreen">
+        <div class="auth-box">
+            <div class="auth-logo">
+                <div class="auth-logo-icon">🚗</div>
+                <h1>Мастер авто</h1>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showAuthTab('login')">Вход</button>
+                <button class="auth-tab" onclick="showAuthTab('register')">Регистрация</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="loginEmail" placeholder="Введите ваш email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword"><i class="fas fa-lock"></i> Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="Введите ваш пароль" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginRole"><i class="fas fa-user-tag"></i> Роль</label>
+                    <select id="loginRole" required>
+                        <option value="">Выберите роль</option>
+                        <option value="admin">Администратор</option>
+                        <option value="manager">Менеджер</option>
+                        <option value="user">Пользователь</option>
+                    </select>
+                </div>
+                
+                <div class="auth-error" id="loginError">
+                    <i class="fas fa-exclamation-circle"></i> Неверный email или пароль
+                </div>
+                
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-sign-in-alt"></i> Войти в систему
+                </button>
+                
+                <div class="switch-auth">
+                    Нет аккаунта? <a onclick="showAuthTab('register')">Зарегистрироваться</a>
+                </div>
+            </form>
+            
+            <!-- Register Form -->
+            <form class="auth-form" id="registerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regFirstName"><i class="fas fa-user"></i> Имя</label>
+                        <input type="text" id="regFirstName" placeholder="Иван" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regLastName"><i class="fas fa-user"></i> Фамилия</label>
+                        <input type="text" id="regLastName" placeholder="Иванов" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="regEmail" placeholder="ivan@example.com" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regPassword"><i class="fas fa-lock"></i> Пароль</label>
+                        <input type="password" id="regPassword" placeholder="Не менее 6 символов" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="regConfirmPassword"><i class="fas fa-lock"></i> Подтвердите пароль</label>
+                        <input type="password" id="regConfirmPassword" placeholder="Повторите пароль" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPhone"><i class="fas fa-phone"></i> Телефон</label>
+                    <input type="tel" id="regPhone" placeholder="+7 (999) 123-45-67">
+                </div>
+                
+                <div class="form-group">
+                    <label for="regRole"><i class="fas fa-user-tag"></i> Роль</label>
+                    <select id="regRole" required>
+                        <option value="">Выберите роль</option>
+                        <option value="admin">Администратор</option>
+                        <option value="manager">Менеджер</option>
+                        <option value="user">Пользователь</option>
+                    </select>
+                </div>
+                
+                <div class="auth-error" id="registerError">
+                    <i class="fas fa-exclamation-circle"></i> Ошибка при регистрации
+                </div>
+                
+                <div class="auth-success" id="registerSuccess">
+                    <i class="fas fa-check-circle"></i> Регистрация успешна! Можете войти в систему.
+                </div>
+                
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-user-plus"></i> Зарегистрироваться
+                </button>
+                
+                <div class="switch-auth">
+                    Уже есть аккаунт? <a onclick="showAuthTab('login')">Войти</a>
+                </div>
+            </form>
+            
+            <div class="auth-footer">
+                <h4><i class="fas fa-key"></i> Демо доступы:</h4>
+                <p><strong>Администратор:</strong> admin@autosalon.ru / admin123</p>
+                <p><strong>Менеджер:</strong> manager@autosalon.ru / manager123</p>
+                <p><strong>Пользователь:</strong> user@autosalon.ru / user123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container" id="dashboardContainer">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🚗</div>
+                <h1>Мастер авто</h1>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">А</div>
+                <div>
+                    <div style="font-weight: 700; color: white; font-size: 18px;" id="userName">Администратор</div>
+                    <div style="font-size: 14px; color: rgba(255, 255, 255, 0.7);" id="userRole">Администратор системы</div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs" id="navigationTabs">
+            <!-- Tabs will be loaded based on user role -->
+        </nav>
+
+        <!-- Main Content -->
+        <div id="dashboard" class="content active">
+            <h2 style="margin-bottom: 30px; color: white; font-size: 28px; display: flex; align-items: center; gap: 15px;">
+                <i class="fas fa-tachometer-alt"></i> Обзор показателей
+            </h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3><i class="fas fa-car"></i> Всего автомобилей</h3>
+                    <div class="value" id="total-cars">0</div>
+                    <div style="font-size: 15px; opacity: 0.9;">+12 за месяц</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-chart-line"></i> Продажи за месяц</h3>
+                    <div class="value" id="month-sales">0 ₽</div>
+                    <div style="font-size: 15px; opacity: 0.9;">+15.5% к прошлому месяцу</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-users"></i> Активных клиентов</h3>
+                    <div class="value" id="active-clients">0</div>
+                    <div style="font-size: 15px; opacity: 0.9;">+8 новых</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-tasks"></i> Выполнено задач</h3>
+                    <div class="value" id="completed-tasks">0/0</div>
+                    <div style="font-size: 15px; opacity: 0.9;">78% выполнено</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 40px;">
+                <div>
+                    <h3 style="margin-bottom: 20px; color: white; display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-history"></i> Последние сделки
+                    </h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Клиент</th>
+                                    <th>Автомобиль</th>
+                                    <th>Дата</th>
+                                    <th>Сумма</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-sales">
+                                <!-- Sales will be added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 style="margin-bottom: 20px; color: white; display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-bolt"></i> Быстрые действия
+                    </h3>
+                    <div class="quick-actions" id="quickActions">
+                        <!-- Quick actions will be loaded based on user role -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cars Management -->
+        <div id="cars" class="content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="color: white; font-size: 28px; display: flex; align-items: center; gap: 15px;">
+                    <i class="fas fa-car"></i> Управление автомобилями
+                </h2>
+                <button class="btn btn-primary" onclick="showModal('addCarModal')" id="addCarBtn">
+                    <i class="fas fa-plus"></i> Добавить автомобиль
+                </button>
+            </div>
+            
+            <div class="search-box">
+                <i class="fas fa-search" style="color: var(--accent);"></i>
+                <input type="text" id="searchCar" placeholder="Поиск по марке, модели, VIN..." onkeyup="filterCars()">
+                <button onclick="filterCars()">
+                    <i class="fas fa-search"></i> Найти
+                </button>
+            </div>
+            
+            <div class="car-grid" id="cars-grid">
+                <!-- Cars will be added here as cards -->
+            </div>
+        </div>
+
+        <!-- Clients Management -->
+        <div id="clients" class="content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="color: white; font-size: 28px; display: flex; align-items: center; gap: 15px;">
+                    <i class="fas fa-users"></i> Управление клиентами
+                </h2>
+                <button class="btn btn-primary" onclick="showModal('addClientModal')" id="addClientBtn">
+                    <i class="fas fa-plus"></i> Добавить клиента
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Имя</th>
+                            <th>Телефон</th>
+                            <th>Email</th>
+                            <th>Автомобиль</th>
+                            <th>Статус</th>
+                            <th>Дата регистрации</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clients-table">
+                        <!-- Clients will be added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sales Management -->
+        <div id="sales" class="content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="color: white; font-size: 28px; display: flex; align-items: center; gap: 15px;">
+                    <i class="fas fa-chart-line"></i> Управление продажами
+                </h2>
+                <button class="btn btn-primary" onclick="showModal('addSaleModal')" id="addSaleBtn">
+                    <i class="fas fa-plus"></i> Новая продажа
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Клиент</th>
+                            <th>Автомобиль</th>
+                            <th>Дата продажи</th>
+                            <th>Сумма</th>
+                            <th>Менеджер</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sales-table">
+                        <!-- Sales will be added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tasks Management -->
+        <div id="tasks" class="content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="color: white; font-size: 28px; display: flex; align-items: center; gap: 15px;">
+                    <i class="fas fa-tasks"></i> Управление задачами
+                </h2>
+                <button class="btn btn-primary" onclick="showModal('addTaskModal')" id="addTaskBtn">
+                    <i class="fas fa-plus"></i> Новая задача
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Задача</th>
+                            <th>Приоритет</th>
+                            <th>Срок</th>
+                            <th>Статус</th>
+                            <th>Ответственный</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasks-table">
+                        <!-- Tasks will be added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reports -->
+        <div id="reports" class="content">
+            <h2 style="margin-bottom: 30px; color: white; font-size: 28px; display: flex; align-items: center; gap: 15px;">
+                <i class="fas fa-chart-bar"></i> Отчеты и аналитика
+            </h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 15px; color: white;"><i class="fas fa-chart-line"></i> Продажи по месяцам</h3>
+                    <div id="sales-chart" style="height: 250px; display: flex; align-items: flex-end; gap: 15px; padding: 20px;">
+                        <div style="flex: 1; background: linear-gradient(to top, var(--primary), var(--accent)); height: 80%; border-radius: 8px 8px 0 0;"></div>
+                        <div style="flex: 1; background: linear-gradient(to top, var(--primary), var(--accent)); height: 60%; border-radius: 8px 8px 0 0;"></div>
+                        <div style="flex: 1; background: linear-gradient(to top, var(--primary), var(--accent)); height: 90%; border-radius: 8px 8px 0 0;"></div>
+                        <div style="flex: 1; background: linear-gradient(to top, var(--primary), var(--accent)); height: 70%; border-radius: 8px 8px 0 0;"></div>
+                        <div style="flex: 1; background: linear-gradient(to top, var(--primary), var(--accent)); height: 85%; border-radius: 8px 8px 0 0;"></div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 15px; color: white;"><i class="fas fa-car"></i> Статистика автомобилей</h3>
+                    <div style="height: 250px; display: flex; flex-direction: column; justify-content: space-around; padding: 20px;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: white;">В наличии</span>
+                                <span style="color: white; font-weight: 700;" id="available-cars">0</span>
+                            </div>
+                            <div style="height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+                                <div style="height: 100%; width: 60%; background: linear-gradient(to right, var(--success), #20c997);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: white;">Продано</span>
+                                <span style="color: white; font-weight: 700;" id="sold-cars">0</span>
+                            </div>
+                            <div style="height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+                                <div style="height: 100%; width: 40%; background: linear-gradient(to right, var(--danger), #ff416c);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: white;">Зарезервировано</span>
+                                <span style="color: white; font-weight: 700;" id="reserved-cars">0</span>
+                            </div>
+                            <div style="height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden;">
+                                <div style="height: 100%; width: 25%; background: linear-gradient(to right, var(--warning), #ffd154);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; display: flex; gap: 20px;">
+                <button class="btn btn-primary" onclick="generateReport()">
+                    <i class="fas fa-file-pdf"></i> Скачать отчет PDF
+                </button>
+                <button class="btn btn-success" onclick="exportData()">
+                    <i class="fas fa-file-excel"></i> Экспорт в Excel
+                </button>
+                <button class="btn btn-primary" onclick="showSalesChart()">
+                    <i class="fas fa-chart-pie"></i> Показать график продаж
+                </button>
+            </div>
+        </div>
+
+        <!-- User Profile -->
+        <div id="profile" class="content">
+            <h2 style="margin-bottom: 30px; color: white; font-size: 28px; display: flex; align-items: center; gap: 15px;">
+                <i class="fas fa-user"></i> Мой профиль
+            </h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+                <div style="text-align: center;">
+                    <div id="profileAvatar" style="width: 180px; height: 180px; background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 64px; font-weight: bold; border: 5px solid rgba(255, 255, 255, 0.2); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);">А</div>
+                    <h3 id="profileName" style="color: white; font-size: 24px; margin-bottom: 5px;">Иван Иванов</h3>
+                    <div id="profileRole" style="color: var(--accent); margin-bottom: 20px; font-weight: 600; font-size: 16px;">Менеджер</div>
+                    <div id="profileEmail" style="color: rgba(255, 255, 255, 0.7); margin-bottom: 20px;">ivan@example.com</div>
+                    <button class="btn btn-primary" onclick="showModal('editProfileModal')">
+                        <i class="fas fa-edit"></i> Редактировать профиль
+                    </button>
+                </div>
+                
+                <div>
+                    <div class="card" style="margin-bottom: 20px;">
+                        <h3><i class="fas fa-chart-bar"></i> Моя статистика</h3>
+                        <div style="margin-top: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 12px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                                <span style="color: white;">Продажи за месяц</span>
+                                <span style="font-weight: bold; color: var(--accent);" id="userSales">0 ₽</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 12px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                                <span style="color: white;">Завершенные задачи</span>
+                                <span style="font-weight: bold; color: var(--accent);" id="userTasks">0/0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                                <span style="color: white;">Активных клиентов</span>
+                                <span style="font-weight: bold; color: var(--accent);" id="userClients">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-history"></i> Последние действия</h3>
+                        <div id="userActivities" style="margin-top: 15px;">
+                            <!-- User activities will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Cars (for regular users) -->
+        <div id="myCars" class="content">
+            <h2 style="margin-bottom: 30px; color: white; font-size: 28px; display: flex; align-items: center; gap: 15px;">
+                <i class="fas fa-car"></i> Мои автомобили
+            </h2>
+            
+            <div class="car-grid" id="userCarsGrid">
+                <!-- User's cars will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Car Modal -->
+    <div id="addCarModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-car"></i> Добавить автомобиль</h2>
+                <button class="close-modal" onclick="closeModal('addCarModal')">×</button>
+            </div>
+            <div class="file-upload">
+                <input type="file" id="car-image" accept="image/*" onchange="previewImage(this, 'car-image-preview')">
+                <label for="car-image">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Загрузите изображение автомобиля</span>
+                    <div style="font-size: 12px; margin-top: 10px; color: rgba(255, 255, 255, 0.5);">
+                        Рекомендуемый размер: 800x600px
+                    </div>
+                </label>
+                <div class="image-preview" id="car-image-preview"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-car"></i> Марка *</label>
+                    <input type="text" id="car-brand" placeholder="Toyota" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-car-side"></i> Модель *</label>
+                    <input type="text" id="car-model" placeholder="Camry" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-alt"></i> Год выпуска *</label>
+                    <input type="number" id="car-year" placeholder="2023" min="2000" max="2024" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Цена (₽) *</label>
+                    <input type="number" id="car-price" placeholder="2500000" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-palette"></i> Цвет</label>
+                    <input type="text" id="car-color" placeholder="Черный">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tachometer-alt"></i> Пробег (км)</label>
+                    <input type="number" id="car-mileage" placeholder="15000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-barcode"></i> VIN номер</label>
+                <input type="text" id="car-vin" placeholder="JTDBU4EE7A9012345">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-info-circle"></i> Статус</label>
+                <select id="car-status">
+                    <option value="available">В наличии</option>
+                    <option value="sold">Продано</option>
+                    <option value="reserved">Зарезервировано</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-file-alt"></i> Описание</label>
+                <textarea id="car-description" rows="4" placeholder="Описание автомобиля..."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-gas-pump"></i> Тип топлива</label>
+                    <select id="car-fuel">
+                        <option value="petrol">Бензин</option>
+                        <option value="diesel">Дизель</option>
+                        <option value="hybrid">Гибрид</option>
+                        <option value="electric">Электро</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-cogs"></i> Коробка передач</label>
+                    <select id="car-transmission">
+                        <option value="automatic">Автомат</option>
+                        <option value="manual">Механика</option>
+                        <option value="robot">Робот</option>
+                        <option value="variator">Вариатор</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="addCar()" style="width: 100%; margin-top: 20px; padding: 20px;">
+                <i class="fas fa-plus"></i> Добавить автомобиль
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit Car Modal -->
+    <div id="editCarModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Редактировать автомобиль</h2>
+                <button class="close-modal" onclick="closeModal('editCarModal')">×</button>
+            </div>
+            <div class="file-upload">
+                <input type="file" id="edit-car-image" accept="image/*" onchange="previewImage(this, 'edit-car-image-preview')">
+                <label for="edit-car-image">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Изменить изображение автомобиля</span>
+                </label>
+                <div class="image-preview" id="edit-car-image-preview"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-car"></i> Марка *</label>
+                    <input type="text" id="edit-car-brand" placeholder="Toyota" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-car-side"></i> Модель *</label>
+                    <input type="text" id="edit-car-model" placeholder="Camry" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-alt"></i> Год выпуска *</label>
+                    <input type="number" id="edit-car-year" placeholder="2023" min="2000" max="2024" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Цена (₽) *</label>
+                    <input type="number" id="edit-car-price" placeholder="2500000" required>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveCarEdit()" style="width: 100%; margin-top: 20px; padding: 20px;">
+                <i class="fas fa-save"></i> Сохранить изменения
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-edit"></i> Редактировать профиль</h2>
+                <button class="close-modal" onclick="closeModal('editProfileModal')">×</button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Имя *</label>
+                    <input type="text" id="edit-firstName" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Фамилия *</label>
+                    <input type="text" id="edit-lastName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email *</label>
+                <input type="email" id="edit-email" required>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-phone"></i> Телефон</label>
+                <input type="tel" id="edit-phone">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Текущий пароль</label>
+                <input type="password" id="edit-currentPassword" placeholder="Для подтверждения изменений">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-key"></i> Новый пароль</label>
+                    <input type="password" id="edit-newPassword" placeholder="Оставьте пустым, если не меняете">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-key"></i> Подтвердите пароль</label>
+                    <input type="password" id="edit-confirmPassword" placeholder="Повторите новый пароль">
+                </div>
+            </div>
+            <div class="auth-error" id="editProfileError"></div>
+            <div class="auth-success" id="editProfileSuccess"></div>
+            <button class="btn btn-primary" onclick="updateProfile()" style="width: 100%; margin-top: 20px; padding: 20px;">
+                <i class="fas fa-save"></i> Сохранить изменения
+            </button>
+        </div>
+    </div>
+
+    <!-- Add Client Modal -->
+    <div id="addClientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Добавить клиента</h2>
+                <button class="close-modal" onclick="closeModal('addClientModal')">×</button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Имя *</label>
+                    <input type="text" id="client-name" placeholder="Иван" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Фамилия *</label>
+                    <input type="text" id="client-surname" placeholder="Иванов" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-phone"></i> Телефон *</label>
+                <input type="tel" id="client-phone" placeholder="+7 (999) 123-45-67" required>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="client-email" placeholder="ivan@example.com">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-map-marker-alt"></i> Адрес</label>
+                <input type="text" id="client-address" placeholder="г. Москва, ул. Примерная, д. 1">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-car"></i> Интересующий автомобиль</label>
+                <select id="client-car">
+                    <option value="">Не выбран</option>
+                    <!-- Cars will be populated here -->
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="addClient()" style="width: 100%; margin-top: 20px; padding: 20px;">
+                <i class="fas fa-plus"></i> Добавить клиента
+            </button>
+        </div>
+    </div>
+
+    <!-- Add Sale Modal -->
+    <div id="addSaleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-shopping-cart"></i> Оформить продажу</h2>
+                <button class="close-modal" onclick="closeModal('addSaleModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Клиент *</label>
+                <select id="sale-client" required>
+                    <option value="">Выберите клиента</option>
+                    <!-- Clients will be populated here -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-car"></i> Автомобиль *</label>
+                <select id="sale-car" required>
+                    <option value="">Выберите автомобиль</option>
+                    <!-- Cars will be populated here -->
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-alt"></i> Дата продажи *</label>
+                    <input type="date" id="sale-date" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-money-bill-wave"></i> Сумма (₽) *</label>
+                    <input type="number" id="sale-amount" placeholder="2500000" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-credit-card"></i> Способ оплаты</label>
+                <select id="sale-payment">
+                    <option value="card">Банковская карта</option>
+                    <option value="cash">Наличные</option>
+                    <option value="credit">Кредит</option>
+                    <option value="installment">Рассрочка</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="addSale()" style="width: 100%; margin-top: 20px; padding: 20px;">
+                <i class="fas fa-check"></i> Оформить продажу
+            </button>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="addTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-tasks"></i> Новая задача</h2>
+                <button class="close-modal" onclick="closeModal('addTaskModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-heading"></i> Название задачи *</label>
+                <input type="text" id="task-title" placeholder="Позвонить клиенту" required>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-file-alt"></i> Описание</label>
+                <textarea id="task-description" rows="3" placeholder="Детали задачи..."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-exclamation-triangle"></i> Приоритет</label>
+                    <select id="task-priority">
+                        <option value="low">Низкий</option>
+                        <option value="medium">Средний</option>
+                        <option value="high">Высокий</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-day"></i> Срок выполнения *</label>
+                    <input type="date" id="task-deadline" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-user-check"></i> Ответственный</label>
+                <select id="task-assigned">
+                    <!-- Users will be populated here -->
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="addTask()" style="width: 100%; margin-top: 20px; padding: 20px;">
+                <i class="fas fa-plus"></i> Добавить задачу
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Data storage with images
+        let users = JSON.parse(localStorage.getItem('autosalon_users')) || [
+            { id: 1, firstName: 'Администратор', lastName: 'Системы', email: 'admin@autosalon.ru', password: 'admin123', phone: '+7 (999) 000-00-01', role: 'admin', createdAt: '2024-01-01', avatar: 'А' },
+            { id: 2, firstName: 'Иван', lastName: 'Менеджеров', email: 'manager@autosalon.ru', password: 'manager123', phone: '+7 (999) 000-00-02', role: 'manager', createdAt: '2024-01-01', avatar: 'И' },
+            { id: 3, firstName: 'Петр', lastName: 'Пользователев', email: 'user@autosalon.ru', password: 'user123', phone: '+7 (999) 000-00-03', role: 'user', createdAt: '2024-01-01', avatar: 'П' }
+        ];
+
+        let cars = JSON.parse(localStorage.getItem('autosalon_cars')) || [
+            {id: 1, brand: 'Toyota', model: 'Camry', year: 2023, price: 2500000, color: 'Черный', mileage: 15000, vin: 'JTDBU4EE7A9012345', status: 'available', description: 'Полный комплект, кожаный салон, камера 360°', fuel: 'petrol', transmission: 'automatic', image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'},
+            {id: 2, brand: 'BMW', model: 'X5', year: 2022, price: 5500000, color: 'Белый', mileage: 25000, vin: 'WBAFR7C52BC123456', status: 'available', description: 'Премиум комплектация, панорамная крыша', fuel: 'diesel', transmission: 'automatic', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'},
+            {id: 3, brand: 'Mercedes', model: 'E-Class', year: 2021, price: 4800000, color: 'Серый', mileage: 35000, vin: 'WDD2132421A123456', status: 'sold', description: 'Бизнес-класс, система адаптивного круиз-контроля', fuel: 'petrol', transmission: 'automatic', image: 'https://images.unsplash.com/photo-1563720223486-3298e9b9e42a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'},
+            {id: 4, brand: 'Hyundai', model: 'Tucson', year: 2023, price: 2800000, color: 'Синий', mileage: 12000, vin: 'KM8J3CA46NU123456', status: 'reserved', description: 'Новый в салоне, полный привод, климат-контроль', fuel: 'hybrid', transmission: 'automatic', image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'},
+            {id: 5, brand: 'Audi', model: 'A6', year: 2022, price: 4200000, color: 'Черный', mileage: 22000, vin: 'WAUZZZ4G0CN123456', status: 'available', description: 'Quattro полный привод, виртуальная панель приборов', fuel: 'petrol', transmission: 'automatic', image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'},
+            {id: 6, brand: 'Kia', model: 'Sportage', year: 2023, price: 2600000, color: 'Красный', mileage: 8000, vin: 'KNAKU811CL5123456', status: 'available', description: 'Комплектация Premium, система безопасности', fuel: 'petrol', transmission: 'automatic', image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'},
+            {id: 7, brand: 'Volkswagen', model: 'Tiguan', year: 2022, price: 2900000, color: 'Серебристый', mileage: 18000, vin: 'WVGZZZ5NZKW123456', status: 'available', description: 'Семиместный кроссовер, мультимедийная система', fuel: 'diesel', transmission: 'robot', image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'},
+            {id: 8, brand: 'Skoda', model: 'Kodiaq', year: 2023, price: 2700000, color: 'Зеленый', mileage: 5000, vin: 'TMBJJ7NU1L5123456', status: 'available', description: 'Семейный кроссовер, просторный салон', fuel: 'petrol', transmission: 'automatic', image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}
+        ];
+
+        let clients = JSON.parse(localStorage.getItem('autosalon_clients')) || [
+            {id: 1, name: 'Иван', surname: 'Иванов', phone: '+7 (999) 123-45-67', email: 'ivan@example.com', address: 'г. Москва, ул. Ленина, д. 10', carId: 1, status: 'active', regDate: '2024-01-15'},
+            {id: 2, name: 'Мария', surname: 'Петрова', phone: '+7 (999) 234-56-78', email: 'maria@example.com', address: 'г. Санкт-Петербург, ул. Пушкина, д. 25', carId: 2, status: 'pending', regDate: '2024-01-20'},
+            {id: 3, name: 'Алексей', surname: 'Сидоров', phone: '+7 (999) 345-67-89', email: 'alex@example.com', address: 'г. Казань, ул. Баумана, д. 5', carId: 3, status: 'closed', regDate: '2024-01-10'},
+            {id: 4, name: 'Елена', surname: 'Кузнецова', phone: '+7 (999) 456-78-90', email: 'elena@example.com', address: 'г. Новосибирск, ул. Советская, д. 15', carId: null, status: 'new', regDate: '2024-01-25'},
+            {id: 5, name: 'Дмитрий', surname: 'Васильев', phone: '+7 (999) 567-89-01', email: 'dmitry@example.com', address: 'г. Екатеринбург, ул. Мира, д. 30', carId: 5, status: 'active', regDate: '2024-02-01'},
+            {id: 6, name: 'Ольга', surname: 'Николаева', phone: '+7 (999) 678-90-12', email: 'olga@example.com', address: 'г. Ростов-на-Дону, ул. Красноармейская, д. 12', carId: 6, status: 'pending', regDate: '2024-02-05'}
+        ];
+
+        let sales = JSON.parse(localStorage.getItem('autosalon_sales')) || [
+            {id: 1, clientId: 1, carId: 1, date: '2024-01-20', amount: 2450000, payment: 'credit', manager: 'Менеджер', status: 'completed', comment: 'Оформлен кредит на 5 лет'},
+            {id: 2, clientId: 2, carId: 2, date: '2024-01-22', amount: 5400000, payment: 'card', manager: 'Менеджер', status: 'pending', comment: 'Ожидание оплаты по карте'},
+            {id: 3, clientId: 3, carId: 3, date: '2024-01-18', amount: 4700000, payment: 'cash', manager: 'Менеджер', status: 'completed', comment: 'Полная оплата наличными'},
+            {id: 4, clientId: 5, carId: 5, date: '2024-02-02', amount: 4100000, payment: 'installment', manager: 'Менеджер', status: 'completed', comment: 'Рассрочка на 24 месяца'},
+            {id: 5, clientId: 6, carId: 6, date: '2024-02-06', amount: 2550000, payment: 'card', manager: 'Менеджер', status: 'pending', comment: 'Предоплата внесена'}
+        ];
+
+        let tasks = JSON.parse(localStorage.getItem('autosalon_tasks')) || [
+            {id: 1, title: 'Позвонить клиенту Иванову', description: 'Обсудить условия покупки и тест-драйв', priority: 'high', deadline: '2024-02-05', assigned: 'Менеджер', status: 'pending'},
+            {id: 2, title: 'Подготовить документы на BMW X5', description: 'Для сделки с Петровой, оформить договор купли-продажи', priority: 'medium', deadline: '2024-02-01', assigned: 'Менеджер', status: 'completed'},
+            {id: 3, title: 'Заказать доставку автомобиля', description: 'Toyota Camry для тест-драйва, подготовить автомобиль к показу', priority: 'low', deadline: '2024-02-10', assigned: 'Менеджер', status: 'pending'},
+            {id: 4, title: 'Отправить коммерческое предложение', description: 'Клиенту Васильеву по Audi A6', priority: 'high', deadline: '2024-02-08', assigned: 'Менеджер', status: 'pending'},
+            {id: 5, title: 'Провести тест-драйв', description: 'С клиентом Николаевой на Kia Sportage', priority: 'medium', deadline: '2024-02-09', assigned: 'Менеджер', status: 'pending'}
+        ];
+
+        // Current user
+        let currentUser = null;
+        let editingCarId = null;
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('autosalon_currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+            }
+            
+            // Set default date values
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 7);
+            document.getElementById('sale-date').value = today;
+            document.getElementById('task-deadline').value = tomorrow.toISOString().split('T')[0];
+            
+            // Initialize car images for new cars
+            cars.forEach(car => {
+                if (!car.image) {
+                    car.image = 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                }
+            });
+            
+            // Save updated cars
+            localStorage.setItem('autosalon_cars', JSON.stringify(cars));
+        });
+
+        // Auth tabs
+        function showAuthTab(tabName) {
+            // Update tabs
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                if (tab.textContent === (tabName === 'login' ? 'Вход' : 'Регистрация')) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Show selected form
+            document.getElementById(tabName === 'login' ? 'loginForm' : 'registerForm').classList.add('active');
+            
+            // Clear errors
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('registerError').style.display = 'none';
+            document.getElementById('registerSuccess').style.display = 'none';
+        }
+
+        // Login function
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const role = document.getElementById('loginRole').value;
+            
+            // Find user
+            const user = users.find(u => 
+                u.email === email && 
+                u.password === password &&
+                u.role === role
+            );
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('autosalon_currentUser', JSON.stringify(user));
+                showDashboard();
+            } else {
+                showError('loginError', 'Неверный email, пароль или роль');
+            }
+        });
+
+        // Register function
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('regFirstName').value;
+            const lastName = document.getElementById('regLastName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const phone = document.getElementById('regPhone').value;
+            const role = document.getElementById('regRole').value;
+            
+            // Validation
+            if (password !== confirmPassword) {
+                showError('registerError', 'Пароли не совпадают');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('registerError', 'Пароль должен содержать минимум 6 символов');
+                return;
+            }
+            
+            // Check if user already exists
+            if (users.find(u => u.email === email)) {
+                showError('registerError', 'Пользователь с таким email уже существует');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                firstName,
+                lastName,
+                email,
+                password,
+                phone,
+                role,
+                createdAt: new Date().toISOString().split('T')[0],
+                avatar: firstName.charAt(0)
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('autosalon_users', JSON.stringify(users));
+            
+            // Show success message
+            document.getElementById('registerError').style.display = 'none';
+            document.getElementById('registerSuccess').style.display = 'block';
+            
+            // Clear form
+            document.getElementById('registerForm').reset();
+            
+            // Auto switch to login after 2 seconds
+            setTimeout(() => {
+                showAuthTab('login');
+                document.getElementById('loginEmail').value = email;
+                document.getElementById('loginPassword').value = password;
+                document.getElementById('loginRole').value = role;
+                document.getElementById('registerSuccess').style.display = 'none';
+            }, 2000);
+        });
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('dashboardContainer').style.display = 'block';
+            
+            // Update user info
+            updateUserInfo();
+            
+            // Load navigation based on user role
+            loadNavigation();
+            
+            // Show dashboard content
+            showContent('dashboard');
+            
+            // Update dashboard stats
+            updateDashboardStats();
+            
+            // Load initial data
+            loadCarsGrid();
+            loadClientsTable();
+            loadSalesTable();
+            loadTasksTable();
+            
+            // Update quick actions based on user role
+            updateQuickActions();
+        }
+
+        // Update user info
+        function updateUserInfo() {
+            document.getElementById('userName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('userRole').textContent = getRoleName(currentUser.role);
+            document.getElementById('userAvatar').textContent = currentUser.avatar;
+            
+            // Update profile page
+            document.getElementById('profileName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('profileRole').textContent = getRoleName(currentUser.role);
+            document.getElementById('profileAvatar').textContent = currentUser.avatar;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            // Fill edit form
+            document.getElementById('edit-firstName').value = currentUser.firstName;
+            document.getElementById('edit-lastName').value = currentUser.lastName;
+            document.getElementById('edit-email').value = currentUser.email;
+            document.getElementById('edit-phone').value = currentUser.phone || '';
+        }
+
+        function getRoleName(role) {
+            const roles = {
+                'admin': 'Администратор системы',
+                'manager': 'Менеджер по продажам',
+                'user': 'Клиент'
+            };
+            return roles[role] || role;
+        }
+
+        // Update quick actions based on user role
+        function updateQuickActions() {
+            const quickActions = document.getElementById('quickActions');
+            
+            if (currentUser.role === 'user') {
+                // For regular users - only show view options
+                quickActions.innerHTML = `
+                    <div class="quick-action-btn" onclick="showContent('myCars')">
+                        <i class="fas fa-car"></i>
+                        <span>Посмотреть автомобили</span>
+                    </div>
+                    <div class="quick-action-btn" onclick="showModal('addClientModal')">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Стать клиентом</span>
+                    </div>
+                    <div class="quick-action-btn" onclick="showContent('profile')">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Редактировать профиль</span>
+                    </div>
+                `;
+            } else {
+                // For admins and managers
+                quickActions.innerHTML = `
+                    <div class="quick-action-btn" onclick="showModal('addCarModal')">
+                        <i class="fas fa-plus"></i>
+                        <span>Добавить автомобиль</span>
+                    </div>
+                    <div class="quick-action-btn" onclick="showModal('addClientModal')">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Добавить клиента</span>
+                    </div>
+                    <div class="quick-action-btn" onclick="showModal('addTaskModal')">
+                        <i class="fas fa-tasks"></i>
+                        <span>Создать задачу</span>
+                    </div>
+                    <div class="quick-action-btn" onclick="showModal('addSaleModal')">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Оформить продажу</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Load navigation based on user role
+        function loadNavigation() {
+            const nav = document.getElementById('navigationTabs');
+            nav.innerHTML = '';
+            
+            const tabs = {
+                admin: [
+                    { id: 'dashboard', icon: 'fas fa-tachometer-alt', text: 'Дашборд' },
+                    { id: 'cars', icon: 'fas fa-car', text: 'Автомобили' },
+                    { id: 'clients', icon: 'fas fa-users', text: 'Клиенты' },
+                    { id: 'sales', icon: 'fas fa-chart-line', text: 'Продажи' },
+                    { id: 'tasks', icon: 'fas fa-tasks', text: 'Задачи' },
+                    { id: 'reports', icon: 'fas fa-chart-bar', text: 'Отчеты' },
+                    { id: 'profile', icon: 'fas fa-user', text: 'Профиль' }
+                ],
+                manager: [
+                    { id: 'dashboard', icon: 'fas fa-tachometer-alt', text: 'Дашборд' },
+                    { id: 'cars', icon: 'fas fa-car', text: 'Автомобили' },
+                    { id: 'clients', icon: 'fas fa-users', text: 'Клиенты' },
+                    { id: 'sales', icon: 'fas fa-chart-line', text: 'Продажи' },
+                    { id: 'tasks', icon: 'fas fa-tasks', text: 'Задачи' },
+                    { id: 'profile', icon: 'fas fa-user', text: 'Профиль' }
+                ],
+                user: [
+                    { id: 'dashboard', icon: 'fas fa-tachometer-alt', text: 'Дашборд' },
+                    { id: 'myCars', icon: 'fas fa-car', text: 'Автомобили' },
+                    { id: 'profile', icon: 'fas fa-user', text: 'Профиль' }
+                ]
+            };
+            
+            const userTabs = tabs[currentUser.role] || tabs.user;
+            
+            userTabs.forEach(tab => {
+                const button = document.createElement('button');
+                button.className = 'nav-tab';
+                button.innerHTML = `<i class="${tab.icon}"></i> ${tab.text}`;
+                button.onclick = () => showContent(tab.id);
+                nav.appendChild(button);
+            });
+            
+            // Set first tab as active
+            if (nav.firstChild) {
+                nav.firstChild.classList.add('active');
+            }
+        }
+
+        // Tab navigation
+        function showContent(contentId) {
+            // Hide all content
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected content
+            document.getElementById(contentId).classList.add('active');
+            
+            // Activate corresponding tab
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                if (tab.textContent.includes(getTabName(contentId))) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Update content if needed
+            switch(contentId) {
+                case 'dashboard':
+                    updateDashboardStats();
+                    break;
+                case 'cars':
+                    loadCarsGrid();
+                    break;
+                case 'clients':
+                    loadClientsTable();
+                    break;
+                case 'sales':
+                    loadSalesTable();
+                    break;
+                case 'tasks':
+                    loadTasksTable();
+                    break;
+                case 'reports':
+                    updateReports();
+                    break;
+                case 'profile':
+                    loadUserProfile();
+                    break;
+                case 'myCars':
+                    loadUserCars();
+                    break;
+            }
+        }
+
+        function getTabName(contentId) {
+            const names = {
+                'dashboard': 'Дашборд',
+                'cars': 'Автомобили',
+                'clients': 'Клиенты',
+                'sales': 'Продажи',
+                'tasks': 'Задачи',
+                'reports': 'Отчеты',
+                'profile': 'Профиль',
+                'myCars': 'Автомобили'
+            };
+            return names[contentId] || '';
+        }
+
+        // Update dashboard statistics
+        function updateDashboardStats() {
+            // Calculate statistics
+            document.getElementById('total-cars').textContent = cars.length;
+            
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            const monthSales = sales.filter(s => {
+                const saleDate = new Date(s.date);
+                return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
+            }).reduce((sum, sale) => sum + sale.amount, 0);
+            
+            document.getElementById('month-sales').textContent = monthSales.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('active-clients').textContent = clients.filter(c => c.status === 'active').length;
+            document.getElementById('completed-tasks').textContent = 
+                `${tasks.filter(t => t.status === 'completed').length}/${tasks.length}`;
+            
+            // Update recent sales
+            const recentSalesTable = document.getElementById('recent-sales');
+            recentSalesTable.innerHTML = '';
+            sales.slice(-5).reverse().forEach(sale => {
+                const client = clients.find(c => c.id === sale.clientId);
+                const car = cars.find(c => c.id === sale.carId);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client ? client.name + ' ' + client.surname : 'Неизвестно'}</td>
+                    <td>${car ? car.brand + ' ' + car.model : 'Неизвестно'}</td>
+                    <td>${sale.date}</td>
+                    <td style="font-weight: 700; color: var(--accent);">${sale.amount.toLocaleString('ru-RU')} ₽</td>
+                    <td><span class="status ${sale.status === 'completed' ? 'status-available' : 'status-pending'}">
+                        ${sale.status === 'completed' ? 'Завершена' : 'В процессе'}
+                    </span></td>
+                `;
+                recentSalesTable.appendChild(row);
+            });
+            
+            // Update reports
+            updateReports();
+        }
+
+        // Update reports
+        function updateReports() {
+            document.getElementById('available-cars').textContent = cars.filter(c => c.status === 'available').length;
+            document.getElementById('sold-cars').textContent = cars.filter(c => c.status === 'sold').length;
+            document.getElementById('reserved-cars').textContent = cars.filter(c => c.status === 'reserved').length;
+        }
+
+        // Load cars as cards
+        function loadCarsGrid() {
+            const grid = document.getElementById('cars-grid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            cars.forEach(car => {
+                const fuelIcons = {
+                    'petrol': 'fas fa-gas-pump',
+                    'diesel': 'fas fa-oil-can',
+                    'hybrid': 'fas fa-car-battery',
+                    'electric': 'fas fa-charging-station'
+                };
+                
+                const transmissionText = {
+                    'automatic': 'Автомат',
+                    'manual': 'Механика',
+                    'robot': 'Робот',
+                    'variator': 'Вариатор'
+                };
+                
+                const statusText = {
+                    'available': 'В наличии',
+                    'sold': 'Продано',
+                    'reserved': 'Зарезервировано'
+                };
+                
+                const card = document.createElement('div');
+                card.className = 'car-card';
+                card.innerHTML = `
+                    <div class="car-image">
+                        <img src="${car.image}" alt="${car.brand} ${car.model}" onerror="this.src='https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                    </div>
+                    <div class="car-info">
+                        <div class="car-title">
+                            <span>${car.brand} ${car.model} ${car.year}</span>
+                            <span class="car-price">${car.price.toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <span class="status status-${car.status}">${statusText[car.status]}</span>
+                        </div>
+                        <div class="car-details">
+                            <div class="detail-item">
+                                <i class="fas fa-palette"></i>
+                                <span>${car.color}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>${car.mileage ? car.mileage.toLocaleString('ru-RU') + ' км' : 'Новый'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="${fuelIcons[car.fuel] || 'fas fa-gas-pump'}"></i>
+                                <span>${car.fuel === 'petrol' ? 'Бензин' : 
+                                       car.fuel === 'diesel' ? 'Дизель' : 
+                                       car.fuel === 'hybrid' ? 'Гибрид' : 'Электро'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-cogs"></i>
+                                <span>${transmissionText[car.transmission] || 'Автомат'}</span>
+                            </div>
+                        </div>
+                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
+                            ${car.description}
+                        </p>
+                        ${currentUser.role !== 'user' ? `
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-edit" style="flex: 1;" onclick="editCar(${car.id})">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </button>
+                                <button class="btn btn-delete" onclick="deleteCar(${car.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            // Show/hide add car button based on user role
+            const addCarBtn = document.getElementById('addCarBtn');
+            if (addCarBtn) {
+                addCarBtn.style.display = currentUser.role === 'user' ? 'none' : 'block';
+            }
+        }
+
+        // Load user profile
+        function loadUserProfile() {
+            // Calculate user-specific stats
+            const userSales = sales.filter(s => s.manager === currentUser.firstName)
+                .reduce((sum, sale) => sum + sale.amount, 0);
+            const userTasks = tasks.filter(t => t.assigned === currentUser.firstName);
+            const userClients = clients.filter(c => c.status === 'active').length;
+            
+            document.getElementById('userSales').textContent = userSales.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('userTasks').textContent = 
+                `${userTasks.filter(t => t.status === 'completed').length}/${userTasks.length}`;
+            document.getElementById('userClients').textContent = userClients;
+            
+            // Load user activities
+            const activities = document.getElementById('userActivities');
+            activities.innerHTML = `
+                <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="font-weight: 700; color: white; margin-bottom: 5px;">
+                        <i class="fas fa-sign-in-alt" style="color: var(--accent);"></i> Вход в систему
+                    </div>
+                    <div style="font-size: 14px; color: rgba(255, 255, 255, 0.7);">
+                        Сегодня, ${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}
+                    </div>
+                </div>
+                <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="font-weight: 700; color: white; margin-bottom: 5px;">
+                        <i class="fas fa-user-edit" style="color: var(--accent);"></i> Обновлен профиль
+                    </div>
+                    <div style="font-size: 14px; color: rgba(255, 255, 255, 0.7);">
+                        ${new Date().toLocaleDateString('ru-RU')}
+                    </div>
+                </div>
+                <div style="padding: 15px;">
+                    <div style="font-weight: 700; color: white; margin-bottom: 5px;">
+                        <i class="fas fa-car" style="color: var(--accent);"></i> Просмотр автомобилей
+                    </div>
+                    <div style="font-size: 14px; color: rgba(255, 255, 255, 0.7);">
+                        ${new Date().toLocaleDateString('ru-RU')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load user cars
+        function loadUserCars() {
+            const container = document.getElementById('userCarsGrid');
+            if (!container) return;
+            
+            // For regular users, show available cars
+            let userCars = cars.filter(car => car.status === 'available');
+            
+            container.innerHTML = '';
+            
+            if (userCars.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-car"></i>
+                        <h3>Нет доступных автомобилей</h3>
+                        <p>Все автомобили в данный момент проданы или зарезервированы</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            userCars.forEach(car => {
+                const fuelIcons = {
+                    'petrol': 'fas fa-gas-pump',
+                    'diesel': 'fas fa-oil-can',
+                    'hybrid': 'fas fa-car-battery',
+                    'electric': 'fas fa-charging-station'
+                };
+                
+                const card = document.createElement('div');
+                card.className = 'car-card';
+                card.innerHTML = `
+                    <div class="car-image">
+                        <img src="${car.image}" alt="${car.brand} ${car.model}" onerror="this.src='https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                    </div>
+                    <div class="car-info">
+                        <div class="car-title">
+                            <span>${car.brand} ${car.model} ${car.year}</span>
+                            <span class="car-price">${car.price.toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <div class="car-details">
+                            <div class="detail-item">
+                                <i class="fas fa-palette"></i>
+                                <span>${car.color}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>${car.mileage ? car.mileage.toLocaleString('ru-RU') + ' км' : 'Новый'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="${fuelIcons[car.fuel] || 'fas fa-gas-pump'}"></i>
+                                <span>${car.fuel === 'petrol' ? 'Бензин' : 
+                                       car.fuel === 'diesel' ? 'Дизель' : 
+                                       car.fuel === 'hybrid' ? 'Гибрид' : 'Электро'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-cogs"></i>
+                                <span>${car.transmission === 'automatic' ? 'Автомат' : 'Механика'}</span>
+                            </div>
+                        </div>
+                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
+                            ${car.description}
+                        </p>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="showModal('addClientModal')">
+                            <i class="fas fa-phone"></i> Записаться на тест-драйв
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Add car
+        function addCar() {
+            const brand = document.getElementById('car-brand').value;
+            const model = document.getElementById('car-model').value;
+            const year = parseInt(document.getElementById('car-year').value);
+            const price = parseFloat(document.getElementById('car-price').value);
+            const color = document.getElementById('car-color').value;
+            const mileage = parseInt(document.getElementById('car-mileage').value) || 0;
+            const vin = document.getElementById('car-vin').value;
+            const status = document.getElementById('car-status').value;
+            const description = document.getElementById('car-description').value;
+            const fuel = document.getElementById('car-fuel').value;
+            const transmission = document.getElementById('car-transmission').value;
+            
+            if (!brand || !model || !year || !price) {
+                alert('Пожалуйста, заполните все обязательные поля');
+                return;
+            }
+            
+            // Get image from file input or use default
+            const fileInput = document.getElementById('car-image');
+            let imageUrl = 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+            
+            // In a real application, you would upload the image to a server
+            // For this demo, we'll use a placeholder
+            if (fileInput.files && fileInput.files[0]) {
+                // Create a local URL for the image
+                imageUrl = URL.createObjectURL(fileInput.files[0]);
+            }
+            
+            const newCar = {
+                id: cars.length > 0 ? Math.max(...cars.map(c => c.id)) + 1 : 1,
+                brand,
+                model,
+                year,
+                price,
+                color,
+                mileage,
+                vin,
+                status,
+                description,
+                fuel,
+                transmission,
+                image: imageUrl
+            };
+            
+            cars.push(newCar);
+            localStorage.setItem('autosalon_cars', JSON.stringify(cars));
+            
+            // Clear form
+            document.getElementById('addCarModal').querySelectorAll('input, select, textarea').forEach(input => {
+                if (input.type !== 'button') input.value = '';
+            });
+            
+            // Clear image preview
+            const preview = document.getElementById('car-image-preview');
+            preview.innerHTML = '';
+            preview.style.display = 'none';
+            
+            closeModal('addCarModal');
+            loadCarsGrid();
+            updateDashboardStats();
+            loadUserCars();
+            
+            // Show success message
+            alert('Автомобиль успешно добавлен!');
+        }
+
+        // Edit car
+        function editCar(id) {
+            const car = cars.find(c => c.id === id);
+            if (car) {
+                editingCarId = id;
+                
+                // Fill form with car data
+                document.getElementById('edit-car-brand').value = car.brand;
+                document.getElementById('edit-car-model').value = car.model;
+                document.getElementById('edit-car-year').value = car.year;
+                document.getElementById('edit-car-price').value = car.price;
+                
+                // Show image preview
+                const preview = document.getElementById('edit-car-image-preview');
+                preview.innerHTML = `<img src="${car.image}" alt="${car.brand} ${car.model}">`;
+                preview.style.display = 'block';
+                
+                showModal('editCarModal');
+            }
+        }
+
+        // Save car edit
+        function saveCarEdit() {
+            if (editingCarId === null) return;
+            
+            const carIndex = cars.findIndex(c => c.id === editingCarId);
+            if (carIndex !== -1) {
+                // Get updated values
+                const brand = document.getElementById('edit-car-brand').value;
+                const model = document.getElementById('edit-car-model').value;
+                const year = parseInt(document.getElementById('edit-car-year').value);
+                const price = parseFloat(document.getElementById('edit-car-price').value);
+                
+                // Update car
+                cars[carIndex] = {
+                    ...cars[carIndex],
+                    brand,
+                    model,
+                    year,
+                    price
+                };
+                
+                // Handle image update
+                const fileInput = document.getElementById('edit-car-image');
+                if (fileInput.files && fileInput.files[0]) {
+                    // Create a local URL for the new image
+                    cars[carIndex].image = URL.createObjectURL(fileInput.files[0]);
+                }
+                
+                localStorage.setItem('autosalon_cars', JSON.stringify(cars));
+                closeModal('editCarModal');
+                loadCarsGrid();
+                updateDashboardStats();
+                loadUserCars();
+                
+                editingCarId = null;
+                
+                // Show success message
+                alert('Автомобиль успешно обновлен!');
+            }
+        }
+
+        // Delete car
+        function deleteCar(id) {
+            if (confirm('Вы уверены, что хотите удалить этот автомобиль?')) {
+                cars = cars.filter(car => car.id !== id);
+                localStorage.setItem('autosalon_cars', JSON.stringify(cars));
+                loadCarsGrid();
+                updateDashboardStats();
+                loadUserCars();
+                alert('Автомобиль удален!');
+            }
+        }
+
+        // Filter cars
+        function filterCars() {
+            const searchTerm = document.getElementById('searchCar').value.toLowerCase();
+            const cards = document.querySelectorAll('#cars-grid .car-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        // Load clients table
+        function loadClientsTable() {
+            const table = document.getElementById('clients-table');
+            if (!table) return;
+            
+            table.innerHTML = '';
+            
+            clients.forEach(client => {
+                const car = cars.find(c => c.id === client.carId);
+                const statusText = {
+                    'active': 'Активный',
+                    'pending': 'В ожидании',
+                    'closed': 'Закрыт',
+                    'new': 'Новый'
+                }[client.status] || client.status;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="font-weight: 700; color: white;">${client.name} ${client.surname}</td>
+                    <td>${client.phone}</td>
+                    <td>${client.email || '-'}</td>
+                    <td>${car ? car.brand + ' ' + car.model : 'Не выбран'}</td>
+                    <td><span class="status status-${client.status}">${statusText}</span></td>
+                    <td>${client.regDate}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit" onclick="editClient(${client.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-delete" onclick="deleteClient(${client.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // Show/hide add client button based on user role
+            const addClientBtn = document.getElementById('addClientBtn');
+            if (addClientBtn) {
+                addClientBtn.style.display = currentUser.role === 'user' ? 'none' : 'block';
+            }
+        }
+
+        // Load sales table
+        function loadSalesTable() {
+            const table = document.getElementById('sales-table');
+            if (!table) return;
+            
+            table.innerHTML = '';
+            
+            sales.forEach(sale => {
+                const client = clients.find(c => c.id === sale.clientId);
+                const car = cars.find(c => c.id === sale.carId);
+                const paymentText = {
+                    'card': 'Карта',
+                    'cash': 'Наличные',
+                    'credit': 'Кредит',
+                    'installment': 'Рассрочка'
+                }[sale.payment] || sale.payment;
+                
+                const statusText = {
+                    'completed': 'Завершена',
+                    'pending': 'В процессе',
+                    'cancelled': 'Отменена'
+                }[sale.status] || sale.status;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${sale.id.toString().padStart(3, '0')}</td>
+                    <td>${client ? client.name + ' ' + client.surname : 'Неизвестно'}</td>
+                    <td>${car ? car.brand + ' ' + car.model : 'Неизвестно'}</td>
+                    <td>${sale.date}</td>
+                    <td style="font-weight: 700; color: var(--accent);">${sale.amount.toLocaleString('ru-RU')} ₽</td>
+                    <td>${sale.manager}</td>
+                    <td><span class="status status-${sale.status}">${statusText}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit" onclick="editSale(${sale.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // Show/hide add sale button based on user role
+            const addSaleBtn = document.getElementById('addSaleBtn');
+            if (addSaleBtn) {
+                addSaleBtn.style.display = currentUser.role === 'user' ? 'none' : 'block';
+            }
+        }
+
+        // Load tasks table
+        function loadTasksTable() {
+            const table = document.getElementById('tasks-table');
+            if (!table) return;
+            
+            table.innerHTML = '';
+            
+            tasks.forEach(task => {
+                const priorityText = {
+                    'low': 'Низкий',
+                    'medium': 'Средний',
+                    'high': 'Высокий'
+                }[task.priority] || task.priority;
+                
+                const priorityClass = {
+                    'low': 'status-pending',
+                    'medium': 'status-available',
+                    'high': 'status-sold'
+                }[task.priority] || '';
+                
+                const statusText = {
+                    'pending': 'В работе',
+                    'completed': 'Завершена',
+                    'cancelled': 'Отменена'
+                }[task.status] || task.status;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 700; color: white;">${task.title}</div>
+                        <div style="font-size: 14px; color: rgba(255, 255, 255, 0.7);">${task.description}</div>
+                    </td>
+                    <td><span class="status ${priorityClass}">${priorityText}</span></td>
+                    <td>${task.deadline}</td>
+                    <td><span class="status status-${task.status}">${statusText}</span></td>
+                    <td>${task.assigned}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-edit" onclick="completeTask(${task.id})">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-delete" onclick="deleteTask(${task.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            // Show/hide add task button based on user role
+            const addTaskBtn = document.getElementById('addTaskBtn');
+            if (addTaskBtn) {
+                addTaskBtn.style.display = currentUser.role === 'user' ? 'none' : 'block';
+            }
+        }
+
+        // Add client
+        function addClient() {
+            const name = document.getElementById('client-name').value;
+            const surname = document.getElementById('client-surname').value;
+            const phone = document.getElementById('client-phone').value;
+            const email = document.getElementById('client-email').value;
+            const address = document.getElementById('client-address').value;
+            const carId = parseInt(document.getElementById('client-car').value) || null;
+            
+            if (!name || !surname || !phone) {
+                alert('Пожалуйста, заполните обязательные поля');
+                return;
+            }
+            
+            const newClient = {
+                id: clients.length > 0 ? Math.max(...clients.map(c => c.id)) + 1 : 1,
+                name,
+                surname,
+                phone,
+                email,
+                address,
+                carId,
+                status: 'new',
+                regDate: new Date().toISOString().split('T')[0]
+            };
+            
+            clients.push(newClient);
+            localStorage.setItem('autosalon_clients', JSON.stringify(clients));
+            
+            // Clear form
+            document.getElementById('addClientModal').querySelectorAll('input, select').forEach(input => {
+                if (input.type !== 'button') input.value = '';
+            });
+            
+            closeModal('addClientModal');
+            loadClientsTable();
+            updateDashboardStats();
+            
+            alert('Клиент успешно добавлен!');
+        }
+
+        // Add sale
+        function addSale() {
+            const clientId = parseInt(document.getElementById('sale-client').value);
+            const carId = parseInt(document.getElementById('sale-car').value);
+            const date = document.getElementById('sale-date').value;
+            const amount = parseFloat(document.getElementById('sale-amount').value);
+            const payment = document.getElementById('sale-payment').value;
+            
+            if (!clientId || !carId || !date || !amount) {
+                alert('Пожалуйста, заполните все обязательные поля');
+                return;
+            }
+            
+            // Check if car is available
+            const car = cars.find(c => c.id === carId);
+            if (car && car.status !== 'available') {
+                alert('Этот автомобиль уже продан или зарезервирован');
+                return;
+            }
+            
+            const newSale = {
+                id: sales.length > 0 ? Math.max(...sales.map(s => s.id)) + 1 : 1,
+                clientId,
+                carId,
+                date,
+                amount,
+                payment,
+                manager: currentUser.firstName,
+                status: 'pending',
+                comment: 'Продажа оформлена'
+            };
+            
+            // Update car status
+            const carIndex = cars.findIndex(c => c.id === carId);
+            if (carIndex !== -1) {
+                cars[carIndex].status = 'sold';
+            }
+            
+            sales.push(newSale);
+            localStorage.setItem('autosalon_sales', JSON.stringify(sales));
+            localStorage.setItem('autosalon_cars', JSON.stringify(cars));
+            
+            // Clear form
+            document.getElementById('addSaleModal').querySelectorAll('input, select').forEach(input => {
+                if (input.type !== 'button') input.value = '';
+            });
+            
+            closeModal('addSaleModal');
+            loadSalesTable();
+            loadCarsGrid();
+            updateDashboardStats();
+            
+            alert('Продажа успешно оформлена!');
+        }
+
+        // Add task
+        function addTask() {
+            const title = document.getElementById('task-title').value;
+            const description = document.getElementById('task-description').value;
+            const priority = document.getElementById('task-priority').value;
+            const deadline = document.getElementById('task-deadline').value;
+            const assigned = document.getElementById('task-assigned').value;
+            
+            if (!title || !deadline) {
+                alert('Пожалуйста, заполните обязательные поля');
+                return;
+            }
+            
+            const newTask = {
+                id: tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1,
+                title,
+                description,
+                priority,
+                deadline,
+                assigned,
+                status: 'pending'
+            };
+            
+            tasks.push(newTask);
+            localStorage.setItem('autosalon_tasks', JSON.stringify(tasks));
+            
+            // Clear form
+            document.getElementById('addTaskModal').querySelectorAll('input, select, textarea').forEach(input => {
+                if (input.type !== 'button') input.value = '';
+            });
+            
+            closeModal('addTaskModal');
+            loadTasksTable();
+            updateDashboardStats();
+            
+            alert('Задача успешно добавлена!');
+        }
+
+        // Complete task
+        function completeTask(id) {
+            const taskIndex = tasks.findIndex(t => t.id === id);
+            if (taskIndex !== -1) {
+                tasks[taskIndex].status = 'completed';
+                localStorage.setItem('autosalon_tasks', JSON.stringify(tasks));
+                loadTasksTable();
+                updateDashboardStats();
+                alert('Задача отмечена как выполненная!');
+            }
+        }
+
+        // Delete task
+        function deleteTask(id) {
+            if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
+                tasks = tasks.filter(task => task.id !== id);
+                localStorage.setItem('autosalon_tasks', JSON.stringify(tasks));
+                loadTasksTable();
+                updateDashboardStats();
+                alert('Задача удалена!');
+            }
+        }
+
+        // Delete client
+        function deleteClient(id) {
+            if (confirm('Вы уверены, что хотите удалить этого клиента?')) {
+                clients = clients.filter(client => client.id !== id);
+                localStorage.setItem('autosalon_clients', JSON.stringify(clients));
+                loadClientsTable();
+                updateDashboardStats();
+                alert('Клиент удален!');
+            }
+        }
+
+        // Update profile
+        function updateProfile() {
+            const firstName = document.getElementById('edit-firstName').value;
+            const lastName = document.getElementById('edit-lastName').value;
+            const email = document.getElementById('edit-email').value;
+            const phone = document.getElementById('edit-phone').value;
+            const currentPassword = document.getElementById('edit-currentPassword').value;
+            const newPassword = document.getElementById('edit-newPassword').value;
+            const confirmPassword = document.getElementById('edit-confirmPassword').value;
+            
+            // Find user index
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex === -1) return;
+            
+            // Verify current password if trying to change
+            if (currentPassword && currentPassword !== users[userIndex].password) {
+                showError('editProfileError', 'Неверный текущий пароль');
+                return;
+            }
+            
+            // Check new password if provided
+            if (newPassword) {
+                if (newPassword !== confirmPassword) {
+                    showError('editProfileError', 'Новые пароли не совпадают');
+                    return;
+                }
+                if (newPassword.length < 6) {
+                    showError('editProfileError', 'Новый пароль должен содержать минимум 6 символов');
+                    return;
+                }
+                users[userIndex].password = newPassword;
+            }
+            
+            // Update user info
+            users[userIndex].firstName = firstName;
+            users[userIndex].lastName = lastName;
+            users[userIndex].email = email;
+            users[userIndex].phone = phone;
+            users[userIndex].avatar = firstName.charAt(0);
+            
+            // Update current user
+            currentUser = users[userIndex];
+            localStorage.setItem('autosalon_currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('autosalon_users', JSON.stringify(users));
+            
+            // Update UI
+            updateUserInfo();
+            
+            // Show success
+            document.getElementById('editProfileError').style.display = 'none';
+            showSuccess('editProfileSuccess', 'Профиль успешно обновлен');
+            
+            // Clear password fields
+            document.getElementById('edit-currentPassword').value = '';
+            document.getElementById('edit-newPassword').value = '';
+            document.getElementById('edit-confirmPassword').value = '';
+            
+            // Close modal after 2 seconds
+            setTimeout(() => {
+                document.getElementById('editProfileSuccess').style.display = 'none';
+                closeModal('editProfileModal');
+            }, 2000);
+        }
+
+        // Image preview
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Предпросмотр">`;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            // Check permissions for user role
+            if (currentUser.role === 'user' && 
+                ['addCarModal', 'editCarModal', 'addSaleModal', 'addTaskModal'].includes(modalId)) {
+                alert('У вас нет прав для выполнения этого действия');
+                return;
+            }
+            
+            // Populate dropdowns for certain modals
+            switch(modalId) {
+                case 'addClientModal':
+                    const clientCarSelect = document.getElementById('client-car');
+                    clientCarSelect.innerHTML = '<option value="">Не выбран</option>';
+                    cars.filter(c => c.status === 'available').forEach(car => {
+                        const option = document.createElement('option');
+                        option.value = car.id;
+                        option.textContent = `${car.brand} ${car.model} - ${car.price.toLocaleString('ru-RU')} ₽`;
+                        clientCarSelect.appendChild(option);
+                    });
+                    break;
+                    
+                case 'addSaleModal':
+                    // Populate clients
+                    const saleClientSelect = document.getElementById('sale-client');
+                    saleClientSelect.innerHTML = '<option value="">Выберите клиента</option>';
+                    clients.forEach(client => {
+                        const option = document.createElement('option');
+                        option.value = client.id;
+                        option.textContent = `${client.name} ${client.surname} - ${client.phone}`;
+                        saleClientSelect.appendChild(option);
+                    });
+                    
+                    // Populate available cars
+                    const saleCarSelect = document.getElementById('sale-car');
+                    saleCarSelect.innerHTML = '<option value="">Выберите автомобиль</option>';
+                    cars.filter(c => c.status === 'available').forEach(car => {
+                        const option = document.createElement('option');
+                        option.value = car.id;
+                        option.textContent = `${car.brand} ${car.model} - ${car.price.toLocaleString('ru-RU')} ₽`;
+                        saleCarSelect.appendChild(option);
+                    });
+                    break;
+                    
+                case 'addTaskModal':
+                    const taskAssignedSelect = document.getElementById('task-assigned');
+                    taskAssignedSelect.innerHTML = '';
+                    users.filter(u => u.role !== 'user').forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.firstName;
+                        option.textContent = `${user.firstName} ${user.lastName} (${getRoleName(user.role)})`;
+                        if (user.id === currentUser.id) option.selected = true;
+                        taskAssignedSelect.appendChild(option);
+                    });
+                    break;
+            }
+            
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            
+            // Reset editing state
+            if (modalId === 'editCarModal') {
+                editingCarId = null;
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                localStorage.removeItem('autosalon_currentUser');
+                currentUser = null;
+                document.getElementById('dashboardContainer').style.display = 'none';
+                document.getElementById('authScreen').style.display = 'flex';
+                showAuthTab('login');
+                
+                // Clear login form
+                document.getElementById('loginForm').reset();
+            }
+        }
+
+        // Generate report (demo function)
+        function generateReport() {
+            alert('Отчет PDF будет сгенерирован и загружен. В реальном приложении здесь была бы генерация PDF.');
+        }
+
+        // Export data (demo function)
+        function exportData() {
+            alert('Данные будут экспортированы в Excel. В реальном приложении здесь был бы экспорт в Excel.');
+        }
+
+        // Show sales chart (demo function)
+        function showSalesChart() {
+            alert('График продаж откроется в новом окне. В реальном приложении здесь был бы интерактивный график.');
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
